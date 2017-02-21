@@ -1,0 +1,72 @@
+
+
+
+
+
+QUESTION 25
+; move unlimited till you reach the center
+0 1 1 r 0
+0 _ 0 l 1
+
+; move left unlimited till you reach 1, convert first 1 to X
+1 * * l 1
+1 1 X r 2
+1 _ * r 5
+
+; move right unlimited till you reach 1, convert first 1 to X
+2 * * r 2
+2 1 X l 1
+2 _ * l 3
+
+; Left is bigger
+3 X _ l 3
+3 0 _ l 4
+4 X 1 l 4
+4 * * r halt
+
+; Right is bigger
+5 X _ r 5
+5 0 _ r 6
+6 X 1 r 6
+6 * * * halt
+
+
+
+
+QUESTION 28
+; going unlimited till you reach the right end
+0 * * r 0
+0 _ * l 1
+
+; change all 1s to 0s, halt if anything else
+1 1 0 l 1
+1 * 1 * halt
+
+
+
+
+QUESTION 32
+; check first character
+0 1 _ r 1
+0 0 _ r 2
+0 _ * * halt
+
+; if 1, go to right end
+1 * * r 1
+1 _ * l 3
+
+; if 0, go to right end
+2 * * r 2
+2 _ * l 5
+
+; if not same, halt.
+3 1 _ l 4
+3 * * * halt
+
+; if same, go to left end
+4 * * l 4
+4 _ * r 0
+
+; if not same, halt.
+5 0 _ l 4
+5 * * * halt

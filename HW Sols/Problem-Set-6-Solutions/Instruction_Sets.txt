@@ -1,0 +1,146 @@
+﻿Instruction Sets 
+Problem Set 6
+COMS W1004 Fall '16
+
+==============
+Problem 12.24
+==============
+; S0: read the leftmost symbol, replace 1 with 0; if X, we're ready 
+;	to replace the Xs back with 1s
+0 1 0 r 1
+0 X 1 r 4
+
+; S1 go to the end
+1 * * r 1
+1 _ _ l 2
+1 X X l 2
+
+; S2 replacing 1 with X
+2 1 X l 3
+2 X X l 2
+
+; S3 go to the beginning
+3 * * l 3
+3 0 0 r 0
+
+; S4 replacing Xs back with 1s
+4 X 1 R 4
+================
+Problem 12.25
+================
+; S0: on 1, write X; on blank, first number is smaller, going to erase it
+0 1 X r 1
+0 _ _ r 4
+
+; S1: going to the second number to check for 1s
+1 * * r 1
+1 _ _ r 2
+
+; S2: checking the paired 1 in the second number, replacing it with ;	Y; on blank, second number is smaller, going to erase it
+2 * * r 2
+2 1 Y l 3
+2 _ _ l 7
+
+; S3: going back to the first number to check for 1s
+3 * * l 3
+3 X X r 0
+
+; S4: replacing Ys back with 1; going to erase the first number if you get to the end
+4 Y 1 r 4
+4 _ _ l 5
+4 1 1 l 5
+
+; S5: going to the first number to erase it
+5 * * l 5
+5 _ _ l 6
+
+; S6: erasing the first number
+6 X _ l 6
+
+; S7: erasing the second number  
+7 Y _ l 7
+7 _ _ l 8
+
+; S8: replacing back the Xs with 1s
+8 X 1 l 8
+8 1 1 l 8
+
+=================
+Problem 12.28
+=================
+; This program takes a binary number n and writes n+1. Eg. 101 --> 110
+; Input: Some binary number.
+
+
+; Machine starts in state mr.
+
+; State mr: moving right
+mr * * r mr             ; Keep moving right
+mr _ _ l check          ; If we see a blank, go to check state
+
+; State check: do we have a carry?
+check 0 1 l noCarry
+check 1 0 l hasCarry
+
+; State noCarry: when we don't have a carry
+noCarry * * l noCarry
+noCarry _ _ r halt-accept   ; finished
+
+; State hasCarry: when we have a carry
+hasCarry 1 0 l hasCarry
+hasCarry 0 1 l noCarry
+hasCarry _ 1 * halt-accept    ; finished, and write the carry
+
+==================
+Problem 12.32
+==================
+
+; This program takes a binary number n and halts with a blank tape
+;      if it is a palindrome, and halts with a non-blank tape if it is not.
+; Input: Some binary number.
+
+
+; Machine starts in grabR start.
+
+; State grabR : "remember" the symbol and move right.
+grabR 0 _ r mr0
+grabR 1 _ r mr1
+grabR _ * * halt
+
+; State grabL : "remember" the symbol and move left.
+grabL 0 _ l ml0
+grabL 1 _ l ml1
+
+
+; State mr0 : move right until the end, remembering 0.
+mr0 * * r mr0
+mr0 _ _ l checkL0
+
+; State mr1 : move right until the end, remembering 1.
+mr1 * * r mr1
+mr1 _ _ l checkL1
+
+; State ml0 : move left until the end, remembering 0.
+ml0 * * l ml0
+ml0 _ _ r checkR0
+
+; State ml1 : move left until the end, remembering 1.
+ml1 * * l ml1
+ml1 _ _ r checkR1
+
+
+; State checkL0: do we have a 0? Then continue left.
+checkL0 0 _ l grabL
+checkL0 1 * * halt
+
+; State checkL1: do we have a 1? Then continue left.
+checkL1 1 _ l grabL
+checkL1 0 * * halt
+
+; State checkR0: do we have a 0? Then continue right.
+checkR0 0 _ r grabR
+checkR0 1 * * halt
+
+; State checkR1: do we have a 1? Then continue right.
+checkR1 1 _ r grabR
+checkR1 0 * * halt
